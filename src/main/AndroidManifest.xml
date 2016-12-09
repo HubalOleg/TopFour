@@ -1,0 +1,36 @@
+<<<<<<< Original
+<<<<<<< Original
+<<<<<<< Original
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<application>
+    <activity android:name="com.oleg.hubal.topfour.authorize.AuthorizeActivity"/>
+</application>
+</manifest>
+
+    =======
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<application>
+    <activity android:name="com.oleg.hubal.topfour.topfour.TopFourActivity"/>
+</application>
+</manifest>
+    >>>>>>> Added
+
+    =======
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<application>
+    <activity android:name="com.oleg.hubal.topfour.authorize.AuthorizeActivity"/>
+</application>
+</manifest>
+    >>>>>>> Added
+
+    =======
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<application>
+    <activity android:name="com.oleg.hubal.topfour.topfour.TopFourActivity"/>
+</application>
+</manifest>
+    >>>>>>> Added
