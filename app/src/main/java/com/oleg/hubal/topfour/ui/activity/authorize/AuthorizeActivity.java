@@ -3,6 +3,7 @@ package com.oleg.hubal.topfour.ui.activity.authorize;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -42,6 +43,7 @@ public class AuthorizeActivity extends MvpAppCompatActivity implements Authorize
 
     @OnClick(R.id.btn_foursquare_login)
     public void OnFourSquareLoginClick() {
+        Log.d(TAG, "OnFourSquareLoginClick: ");
         mAuthorizePresenter.onFoursquareLoginClick();
     }
 

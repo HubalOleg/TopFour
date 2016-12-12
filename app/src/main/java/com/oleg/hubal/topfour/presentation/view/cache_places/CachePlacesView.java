@@ -6,5 +6,5 @@ public interface CachePlacesView extends MvpView {
 
     void showProgressDialog();
     void dismissProgressDialog();
-
+    void showLocation(String location);
 }

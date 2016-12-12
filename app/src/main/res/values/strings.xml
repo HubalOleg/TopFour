@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TopFour</string>
+    <string name="location_correct">Yes it\'s my current location</string>
 </resources>

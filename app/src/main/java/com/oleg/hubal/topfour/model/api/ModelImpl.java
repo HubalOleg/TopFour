@@ -1,4 +1,4 @@
-package com.oleg.hubal.topfour.model;
+package com.oleg.hubal.topfour.model.api;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

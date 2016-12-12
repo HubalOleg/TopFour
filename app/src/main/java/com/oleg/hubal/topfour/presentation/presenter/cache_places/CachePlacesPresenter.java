@@ -6,8 +6,9 @@ import android.content.Context;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.gson.Gson;
-import com.oleg.hubal.topfour.model.ModelImpl;
+import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.data.UserData;
+import com.oleg.hubal.topfour.model.database.DbUserData;
 import com.oleg.hubal.topfour.presentation.view.cache_places.CachePlacesView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 
@@ -24,7 +25,10 @@ import retrofit2.Response;
 @InjectViewState
 public class CachePlacesPresenter extends MvpPresenter<CachePlacesView> {
 
+    private static final String TAG = "CachePlacesPresenter";
+
     private final Context mContext;
+    private String mUserLocation;
 
     public CachePlacesPresenter(Context context) {
         mContext = context;
@@ -40,6 +44,7 @@ public class CachePlacesPresenter extends MvpPresenter<CachePlacesView> {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     parseResponseAndSaveUserData(response.body());
+                    getViewState().showLocation(mUserLocation);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -61,5 +66,19 @@ public class CachePlacesPresenter extends MvpPresenter<CachePlacesView> {
         JSONObject userJSON = responseJSON.getJSONObject("response").getJSONObject("user");
         Gson gson = new Gson();
         UserData userData = gson.fromJson(userJSON.toString(), UserData.class);
+        saveInDatabase(userData);
+        mUserLocation = userData.getHomeCity();
+    }
+
+    private void saveInDatabase(UserData userData) {
+        DbUserData dbUserData = new DbUserData();
+        dbUserData.setId(userData.getId());
+        dbUserData.setFirstName(userData.getFirstName());
+        dbUserData.setLastName(userData.getLastName());
+        dbUserData.setGender(userData.getGender());
+        dbUserData.setHomeCity(userData.getHomeCity());
+        dbUserData.setRelationship(userData.getRelationship());
+        dbUserData.setPhoto(userData.getPhoto().getPrefix() + "width960" + userData.getPhoto().getSuffix());
+        dbUserData.save();
     }
 }

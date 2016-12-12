@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -12,12 +14,18 @@ import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.presentation.presenter.cache_places.CachePlacesPresenter;
 import com.oleg.hubal.topfour.presentation.view.cache_places.CachePlacesView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CachePlacesActivity extends MvpAppCompatActivity implements CachePlacesView {
     public static final String TAG = "CachePlacesActivity";
 
     private ProgressDialog mProgressDialog;
+
+    @BindView(R.id.tv_ask_location)
+    TextView mAskLocationTextView;
+    @BindView(R.id.btn_is_location_correct)
+    Button mIsCorrectLocationButton;
 
     @InjectPresenter
     CachePlacesPresenter mCachePlacesPresenter;
@@ -54,5 +62,10 @@ public class CachePlacesActivity extends MvpAppCompatActivity implements CachePl
     @Override
     public void dismissProgressDialog() {
         mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void showLocation(String location) {
+        mAskLocationTextView.setText("Is " + location + " your current location?");
     }
 }

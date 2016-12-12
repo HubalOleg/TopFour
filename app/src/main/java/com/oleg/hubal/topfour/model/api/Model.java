@@ -1,4 +1,4 @@
-package com.oleg.hubal.topfour.model;
+package com.oleg.hubal.topfour.model.api;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

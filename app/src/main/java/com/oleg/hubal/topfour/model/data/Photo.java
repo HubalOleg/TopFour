@@ -8,9 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Photo {
+
     @SerializedName("prefix")
     @Expose
     private String prefix;
+
     @SerializedName("suffix")
     @Expose
     private String suffix;
