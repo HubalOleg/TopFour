@@ -3,8 +3,6 @@ package com.oleg.hubal.topfour.ui.activity.authorize;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -13,15 +11,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.presentation.presenter.authorize.AuthorizePresenter;
 import com.oleg.hubal.topfour.presentation.view.authorize.AuthorizeView;
+import com.oleg.hubal.topfour.ui.activity.main.MainActivity;
 
-import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthorizeActivity extends MvpAppCompatActivity implements AuthorizeView {
     public static final String TAG = "AuthorizeActivity";
-
-    @BindView(R.id.btn_foursquare_login)
-    Button mFoursquareLoginButton;
 
     @InjectPresenter
     AuthorizePresenter mAuthorizePresenter;
@@ -41,11 +37,11 @@ public class AuthorizeActivity extends MvpAppCompatActivity implements Authorize
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authorize);
+        ButterKnife.bind(AuthorizeActivity.this);
     }
 
     @OnClick(R.id.btn_foursquare_login)
-    void OnFourSquareLoginClick() {
-        Log.d(TAG, "OnFourSquareLoginClick: ");
+    public void OnFourSquareLoginClick() {
         mAuthorizePresenter.onFoursquareLoginClick();
     }
 
@@ -63,5 +59,10 @@ public class AuthorizeActivity extends MvpAppCompatActivity implements Authorize
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mAuthorizePresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void userAuthorized() {
+        startActivity(MainActivity.getIntent(AuthorizeActivity.this));
     }
 }

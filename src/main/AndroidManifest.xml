@@ -1,6 +1,7 @@
 <<<<<<< Original
 <<<<<<< Original
 <<<<<<< Original
+<<<<<<< Original
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
 <application>
@@ -31,6 +32,15 @@
 
 <application>
     <activity android:name="com.oleg.hubal.topfour.topfour.TopFourActivity"/>
+</application>
+</manifest>
+    >>>>>>> Added
+
+    =======
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<application>
+    <activity android:name="com.oleg.hubal.topfour.cache_places.CachePlacesActivity"/>
 </application>
 </manifest>
     >>>>>>> Added

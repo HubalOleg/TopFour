@@ -7,4 +7,5 @@ import com.arellomobile.mvp.MvpView;
 public interface AuthorizeView extends MvpView {
     void sendActivityRequest(Intent intent,int requestCode);
     void showError(String error);
+    void userAuthorized();
 }

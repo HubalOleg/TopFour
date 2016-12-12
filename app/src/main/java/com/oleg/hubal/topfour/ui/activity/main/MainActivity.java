@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.oleg.hubal.topfour.ui.activity.authorize.AuthorizeActivity;
+import com.oleg.hubal.topfour.ui.activity.cache_places.CachePlacesActivity;
 import com.oleg.hubal.topfour.ui.activity.topfour.TopFourActivity;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 
@@ -30,20 +31,31 @@ public class MainActivity extends AppCompatActivity {
     private void checkAuthorization() {
         boolean isAuthorized = !TextUtils.isEmpty(PreferenceManager.getToken(MainActivity.this));
         if (isAuthorized) {
-            launchTopFourActivity();
+            checkCachedPlaces();
         } else {
             launchAuthorizeActivity();
         }
     }
 
+    private void checkCachedPlaces() {
+        boolean isCashed = PreferenceManager.isLocationPlacesCached(MainActivity.this);
+        if (isCashed) {
+            launchTopFourActivity();
+        } else {
+            launchCachePlacesActivity();
+        }
+    }
+
     private void launchTopFourActivity() {
-        Intent intent = new Intent(MainActivity.this, TopFourActivity.class);
-        startActivity(intent);
+        startActivity(TopFourActivity.getIntent(MainActivity.this));
+    }
+
+    private void launchCachePlacesActivity() {
+        startActivity(CachePlacesActivity.getIntent(MainActivity.this));
     }
 
     private void launchAuthorizeActivity() {
-        Intent intent = new Intent(MainActivity.this, AuthorizeActivity.class);
-        startActivity(intent);
+        startActivity(AuthorizeActivity.getIntent(MainActivity.this));
     }
 
 }

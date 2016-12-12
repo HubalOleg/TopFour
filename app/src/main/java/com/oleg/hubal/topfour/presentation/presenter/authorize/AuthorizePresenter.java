@@ -12,6 +12,7 @@ import com.foursquare.android.nativeoauth.FoursquareInvalidRequestException;
 import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.FoursquareUnsupportedVersionException;
+import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 import com.oleg.hubal.topfour.presentation.view.authorize.AuthorizeView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
@@ -47,6 +48,11 @@ public class AuthorizePresenter extends MvpPresenter<AuthorizeView> {
             case REQUEST_CODE_FSQ_CONNECT:
                 onCompleteConnect(resultCode, data);
                 break;
+            case REQUEST_CODE_FSQ_TOKEN_EXCHANGE:
+                AccessTokenResponse tokenResponse = FoursquareOAuth.getTokenFromResult(resultCode, data);
+                saveUserToken(tokenResponse.getAccessToken());
+                getViewState().userAuthorized();
+                break;
         }
     }
 
@@ -56,7 +62,8 @@ public class AuthorizePresenter extends MvpPresenter<AuthorizeView> {
 
         if (exception == null) {
             String code = codeResponse.getCode();
-            saveUserToken(code);
+            Intent intent = FoursquareOAuth.getTokenExchangeIntent(mContext, CLIENT_ID, CLIENT_SECRET, code);
+            getViewState().sendActivityRequest(intent, REQUEST_CODE_FSQ_TOKEN_EXCHANGE);
         } else {
             handleException(exception);
         }
