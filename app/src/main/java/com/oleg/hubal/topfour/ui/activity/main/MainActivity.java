@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.oleg.hubal.topfour.ui.activity.authorize.AuthorizeActivity;
-import com.oleg.hubal.topfour.ui.activity.cache_places.CachePlacesActivity;
+import com.oleg.hubal.topfour.ui.activity.cache_location.CacheLocationActivity;
 import com.oleg.hubal.topfour.ui.activity.topfour.TopFourActivity;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchCachePlacesActivity() {
-        startActivity(CachePlacesActivity.getIntent(MainActivity.this));
+        startActivity(CacheLocationActivity.getIntent(MainActivity.this));
     }
 
     private void launchAuthorizeActivity() {

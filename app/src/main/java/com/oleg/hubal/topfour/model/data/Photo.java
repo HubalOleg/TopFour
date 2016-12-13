@@ -52,4 +52,8 @@ public class Photo {
     public void setSuffix(String suffix) {
         this.suffix = suffix;
     }
+
+    public String getPhotoUrl() {
+        return prefix + "" + suffix;
+    }
 }

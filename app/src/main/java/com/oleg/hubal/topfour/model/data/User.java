@@ -1,30 +1,33 @@
-package com.oleg.hubal.topfour.model.database;
+package com.oleg.hubal.topfour.model.data;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by User on 12.12.2016.
  */
-@Table(database = AppDatabase.class)
-public class DbUserData extends BaseModel {
+public class User {
 
-    @Column
-    @PrimaryKey
+    @SerializedName("id")
+    @Expose
     private String id;
-    @Column
+    @SerializedName("firstName")
+    @Expose
     private String firstName;
-    @Column
+    @SerializedName("lastName")
+    @Expose
     private String lastName;
-    @Column
+    @SerializedName("gender")
+    @Expose
     private String gender;
-    @Column
+    @SerializedName("relationship")
+    @Expose
     private String relationship;
-    @Column
-    private String photo;
-    @Column
+    @SerializedName("photo")
+    @Expose
+    private Photo photo;
+    @SerializedName("homeCity")
+    @Expose
     private String homeCity;
 
     public String getId() {
@@ -67,11 +70,11 @@ public class DbUserData extends BaseModel {
         this.relationship = relationship;
     }
 
-    public String getPhoto() {
+    public Photo getPhoto() {
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(Photo photo) {
         this.photo = photo;
     }
 

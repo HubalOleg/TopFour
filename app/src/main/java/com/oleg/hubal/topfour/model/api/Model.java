@@ -8,6 +8,7 @@ import retrofit2.Call;
  */
 
 public interface Model {
-
-    Call<ResponseBody> getUserData(String userToken);
+    Call<ResponseBody> getUserData();
+    Call<ResponseBody> getVenuesData(String location, int limit);
+    Call<ResponseBody> getVenuePhoto(String venueID, int limit);
 }

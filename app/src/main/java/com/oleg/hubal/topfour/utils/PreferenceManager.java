@@ -12,6 +12,7 @@ public class PreferenceManager {
 
     private static final String KEY_AUTH_TOKEN = "KEY_AUTH_TOKEN";
     private static final String KEY_PLACES_CACHED = "KEY_PLACES_CACHED";
+    private static final String KEY_LOCATION = "KEY_LOCATION";
 
     private static SharedPreferences mSharedPreferences;
 
@@ -39,10 +40,22 @@ public class PreferenceManager {
         return mSharedPreferences.getBoolean(KEY_PLACES_CACHED, false);
     }
 
-    public static void setLocationPlacesCash(Context context, boolean isCached) {
+    public static void setLocationCashed(Context context, boolean isCached) {
         mSharedPreferences = getPref(context);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putBoolean(KEY_PLACES_CACHED, isCached);
+        editor.apply();
+    }
+
+    public static String getLocation(Context context) {
+        mSharedPreferences = getPref(context);
+        return mSharedPreferences.getString(KEY_LOCATION, "");
+    }
+
+    public static void setLocation(Context context, String location) {
+        mSharedPreferences = getPref(context);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(KEY_LOCATION, location);
         editor.apply();
     }
 }

@@ -44,5 +44,9 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbflow_version}"
 
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+
+    compile('com.mikepenz:materialdrawer:5.8.1@aar') {
+        transitive = true
+    }
 }
 

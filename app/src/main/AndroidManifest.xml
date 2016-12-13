@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".ui.activity.topfour.TopFourActivity" />
         <activity android:name=".ui.activity.authorize.AuthorizeActivity" />
-        <activity android:name=".ui.activity.cache_places.CachePlacesActivity" />
+        <activity android:name=".ui.activity.cache_location.CacheLocationActivity" />
         <activity
             android:name="com.foursquare.android.nativeoauth.TokenExchangeActivity"
             android:theme="@android:style/Theme.Dialog" />
