@@ -1,4 +1,4 @@
-package com.oleg.hubal.topfour.model.data;
+package com.oleg.hubal.topfour.model.api.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

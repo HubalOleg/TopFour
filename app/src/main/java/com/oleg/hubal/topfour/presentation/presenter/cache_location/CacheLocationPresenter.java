@@ -9,8 +9,7 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.gson.Gson;
 import com.oleg.hubal.topfour.model.api.ModelImpl;
-import com.oleg.hubal.topfour.model.data.User;
-import com.oleg.hubal.topfour.model.database.UserDB;
+import com.oleg.hubal.topfour.model.api.data.User;
 import com.oleg.hubal.topfour.presentation.view.cache_location.CacheLocationView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 
@@ -62,7 +61,8 @@ public class CacheLocationPresenter extends MvpPresenter<CacheLocationView> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             if (response.isSuccessful()) {
-                saveLocationAndStartTopFourActivity();
+                saveLocationPref();
+                startTopFourActivity();
             } else {
                 getViewState().dismissProgressDialog();
                 getViewState().askAnotherLocation();
@@ -103,25 +103,16 @@ public class CacheLocationPresenter extends MvpPresenter<CacheLocationView> {
         JSONObject responseJSON = new JSONObject(responseBody.string());
         JSONObject userJSON = responseJSON.getJSONObject("response").getJSONObject("user");
         User user = mGson.fromJson(userJSON.toString(), User.class);
-        saveUserDataInDatabase(user);
+        user.saveToDatabase();
         mUserLocation = user.getHomeCity();
     }
 
-    private void saveUserDataInDatabase(User user) {
-        UserDB dbUser = new UserDB();
-        dbUser.setId(user.getId());
-        dbUser.setFirstName(user.getFirstName());
-        dbUser.setLastName(user.getLastName());
-        dbUser.setGender(user.getGender());
-        dbUser.setHomeCity(user.getHomeCity());
-        dbUser.setRelationship(user.getRelationship());
-        dbUser.setPhoto(user.getPhoto().getPrefix() + "width960" + user.getPhoto().getSuffix());
-        dbUser.save();
-    }
-
-    private void saveLocationAndStartTopFourActivity() {
+    private void saveLocationPref() {
         PreferenceManager.setLocation(mContext, mUserLocation);
         PreferenceManager.setLocationCashed(mContext, true);
+    }
+
+    private void startTopFourActivity() {
         getViewState().showTopFourActivity();
     }
 }

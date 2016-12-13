@@ -5,6 +5,5 @@ package com.oleg.hubal.topfour.global;
  */
 
 public class Constants {
-
     public static String BASE_URL = "https://api.foursquare.com/v2/";
 }

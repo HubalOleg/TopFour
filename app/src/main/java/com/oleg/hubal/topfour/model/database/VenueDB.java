@@ -1,5 +1,6 @@
 package com.oleg.hubal.topfour.model.database;
 
+import com.oleg.hubal.topfour.model.VenueItem;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -10,7 +11,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  */
 
 @Table(database = AppDatabase.class)
-public class VenueDB extends BaseModel {
+public class VenueDB extends BaseModel implements VenueItem {
 
     @Column
     @PrimaryKey
@@ -25,8 +26,18 @@ public class VenueDB extends BaseModel {
     private String city;
     @Column
     private String country;
-    @Column
-    private String photo;
+
+    public VenueDB() {
+    }
+
+    public VenueDB(String id, String name, String address, String crossStreet, String city, String country) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.crossStreet = crossStreet;
+        this.city = city;
+        this.country = country;
+    }
 
     public String getId() {
         return id;
@@ -76,11 +87,4 @@ public class VenueDB extends BaseModel {
         this.country = country;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
 }

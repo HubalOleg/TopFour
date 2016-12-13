@@ -27,6 +27,19 @@ public class UserDB extends BaseModel {
     @Column
     private String homeCity;
 
+    public UserDB() {
+    }
+
+    public UserDB(String id, String firstName, String lastName, String gender, String relationship, String photo, String homeCity) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.relationship = relationship;
+        this.photo = photo;
+        this.homeCity = homeCity;
+    }
+
     public String getId() {
         return id;
     }
