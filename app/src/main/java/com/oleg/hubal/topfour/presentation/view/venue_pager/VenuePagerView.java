@@ -8,5 +8,5 @@ import java.util.List;
 public interface VenuePagerView extends MvpView {
 
     void addVenueList(List<VenueItem> venueItems);
-    void addVenue(VenueItem venueItem);
+    void notifyVenueInserted(int position);
 }

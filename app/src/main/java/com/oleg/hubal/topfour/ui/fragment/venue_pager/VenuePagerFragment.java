@@ -3,7 +3,6 @@ package com.oleg.hubal.topfour.ui.fragment.venue_pager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +22,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePagerView {
+    private static int RECYCLER_FLING_VELOCITY = 12000;
     public static final String TAG = "VenuePagerFragment";
 
     private VenueAdapter mVenueAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     @BindView(R.id.rv_venue_recycler)
     RecyclerView mVenueRecyclerView;
-
     @InjectPresenter
     VenuePagerPresenter mVenuePagerPresenter;
 
@@ -40,8 +40,18 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
 
     private VenueAdapter.OnVenueClickListener mOnVenueClickListener = new VenueAdapter.OnVenueClickListener() {
         @Override
-        public void onVenueClick(int position) {
+        public void onVenueClick(String venueId) {
 //            todo
+        }
+    };
+
+    private RecyclerView.OnFlingListener mOnFlingListener = new RecyclerView.OnFlingListener() {
+        @Override
+        public boolean onFling(int velocityX, int velocityY) {
+            if (velocityY > RECYCLER_FLING_VELOCITY) {
+                mVenuePagerPresenter.onPowerFling(mLayoutManager.findLastCompletelyVisibleItemPosition());
+            }
+            return false;
         }
     };
 
@@ -61,6 +71,7 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
         ButterKnife.bind(VenuePagerFragment.this, view);
 
         initRecyclerView();
+        mVenuePagerPresenter.onLoadData();
 
         return view;
     }
@@ -68,28 +79,27 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private void initRecyclerView() {
         mVenueRecyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mVenueRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mVenueRecyclerView.setLayoutManager(mLayoutManager);
 
-        mVenueAdapter = new VenueAdapter(mOnVenueClickListener);
+        mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
         mVenueRecyclerView.setAdapter(mVenueAdapter);
+        mVenueRecyclerView.setOnFlingListener(mOnFlingListener);
+
     }
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mVenuePagerPresenter.onLoadData();
     }
 
     @Override
-    public void addVenue(VenueItem venueItem) {
-        Log.d(TAG, "addVenue: ");
-        mVenueAdapter.addVenue(venueItem);
+    public void notifyVenueInserted(int position) {
+        mVenueAdapter.notifyItemInserted(position);
     }
 
     @Override
     public void addVenueList(List<VenueItem> venueItems) {
-        Log.d(TAG, "addVenueList: ");
         mVenueAdapter.addVenueList(venueItems);
     }
 }

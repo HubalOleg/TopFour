@@ -90,7 +90,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     public void initMaterialDrawer(String userName, String userPhotoUrl) {
         AccountHeader drawerHeader = new AccountHeaderBuilder()
                 .withActivity(TopFourActivity.this)
-                .withHeaderBackground(R.drawable.drawer_header)
+                .withHeaderBackground(R.drawable.drawer_header_background)
                 .withSelectionListEnabledForSingleProfile(false)
                 .addProfiles(
                         new ProfileDrawerItem().withName(userName).withIcon(userPhotoUrl)
@@ -98,7 +98,10 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
                 .withOnAccountHeaderProfileImageListener(mOnProfileImageListener)
                 .build();
 
-        PrimaryDrawerItem itemPlaces = new PrimaryDrawerItem().withName("Places").withIdentifier(DRAWER_ITEM_PLACES_ID);
+        PrimaryDrawerItem itemPlaces = new PrimaryDrawerItem()
+                .withName("Places")
+                .withIdentifier(DRAWER_ITEM_PLACES_ID)
+                .withSelectedColorRes(R.color.colorAccent);
 
         mDrawer = new DrawerBuilder()
                 .withActivity(TopFourActivity.this)

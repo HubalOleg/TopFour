@@ -21,22 +21,24 @@ public class VenueDB extends BaseModel implements VenueItem {
     @Column
     private String address;
     @Column
-    private String crossStreet;
-    @Column
     private String city;
     @Column
     private String country;
+    @Column
+    private String photoUrl;
+
+    private boolean isCached = false;
 
     public VenueDB() {
     }
 
-    public VenueDB(String id, String name, String address, String crossStreet, String city, String country) {
+    public VenueDB(String id, String name, String address, String city, String country, String photoUrl) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.crossStreet = crossStreet;
         this.city = city;
         this.country = country;
+        this.photoUrl = photoUrl;
     }
 
     public String getId() {
@@ -63,14 +65,6 @@ public class VenueDB extends BaseModel implements VenueItem {
         this.address = address;
     }
 
-    public String getCrossStreet() {
-        return crossStreet;
-    }
-
-    public void setCrossStreet(String crossStreet) {
-        this.crossStreet = crossStreet;
-    }
-
     public String getCity() {
         return city;
     }
@@ -87,4 +81,25 @@ public class VenueDB extends BaseModel implements VenueItem {
         this.country = country;
     }
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    @Override
+    public boolean isCached() {
+        return isCached;
+    }
+
+    @Override
+    public void setCached(boolean cached) {
+        isCached = cached;
+    }
+
+    public void saveToDatabase() {
+        save();
+    }
 }

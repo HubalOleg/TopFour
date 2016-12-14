@@ -12,6 +12,7 @@ import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.api.data.User;
 import com.oleg.hubal.topfour.presentation.view.cache_location.CacheLocationView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
+import com.oleg.hubal.topfour.utils.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ public class CacheLocationPresenter extends MvpPresenter<CacheLocationView> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                parseResponseAndSaveUserData(response.body());
+                parseResponseAndSaveUserData(response);
                 getViewState().showLocation(mUserLocation);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -99,9 +100,9 @@ public class CacheLocationPresenter extends MvpPresenter<CacheLocationView> {
         venueDataCall.enqueue(mVenueDataCallback);
     }
 
-    private void parseResponseAndSaveUserData(ResponseBody responseBody) throws IOException, JSONException {
-        JSONObject responseJSON = new JSONObject(responseBody.string());
-        JSONObject userJSON = responseJSON.getJSONObject("response").getJSONObject("user");
+    private void parseResponseAndSaveUserData(Response<ResponseBody> response) throws IOException, JSONException {
+        JSONObject responseJSON = Utility.getJSONObjectFromResponse(response);
+        JSONObject userJSON = responseJSON.getJSONObject("user");
         User user = mGson.fromJson(userJSON.toString(), User.class);
         user.saveToDatabase();
         mUserLocation = user.getHomeCity();

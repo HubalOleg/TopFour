@@ -2,13 +2,13 @@ package com.oleg.hubal.topfour.model.api.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.oleg.hubal.topfour.model.CacheableItem;
+import com.oleg.hubal.topfour.model.DatabaseItem;
 import com.oleg.hubal.topfour.model.database.UserDB;
 
 /**
  * Created by User on 12.12.2016.
  */
-public class User implements CacheableItem {
+public class User implements DatabaseItem {
 
     @SerializedName("id")
     @Expose

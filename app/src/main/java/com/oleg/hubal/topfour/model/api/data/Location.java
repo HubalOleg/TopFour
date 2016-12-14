@@ -12,9 +12,6 @@ public class Location {
     @SerializedName("address")
     @Expose
     private String address;
-    @SerializedName("crossStreet")
-    @Expose
-    private String crossStreet;
     @SerializedName("city")
     @Expose
     private String city;
@@ -28,14 +25,6 @@ public class Location {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getCrossStreet() {
-        return crossStreet;
-    }
-
-    public void setCrossStreet(String crossStreet) {
-        this.crossStreet = crossStreet;
     }
 
     public String getCity() {

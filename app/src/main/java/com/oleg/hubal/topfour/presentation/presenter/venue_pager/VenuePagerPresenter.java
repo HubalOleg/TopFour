@@ -30,6 +30,8 @@ import retrofit2.Response;
 @InjectViewState
 public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
 
+    private static final String TAG = "VenuePagerPresenter";
+
     private static final int CACHED_ITEM_LIMIT = 5;
 
     private final Context mContext;
@@ -37,12 +39,15 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private String mLocation;
     private List<VenueItem> mVenueItems;
     private int mApiLimit = 0;
+    private boolean isLoading = false;
 
     private Callback<ResponseBody> mVenueDataCallback = new Callback<ResponseBody>() {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                parseResponse(response.body());
+                if (response.isSuccessful()) {
+                    parseResponse(response.body());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -64,6 +69,7 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     }
 
     public void onLoadData() {
+        getViewState().addVenueList(mVenueItems);
         boolean isDatabaseEmpty = loadDataFromDatabase();
         if (isDatabaseEmpty) {
             loadDataFromApi();
@@ -104,6 +110,7 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
 
     private void handleNewVenueItem(Venue venue) {
         if (mVenueItems.size() < CACHED_ITEM_LIMIT) {
+            venue.setCached(true);
             venue.saveToDatabase();
         }
         addItemIfNotExist(venue);
@@ -116,6 +123,17 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
             }
         }
         mVenueItems.add(venue);
-        getViewState().addVenue(venue);
+        getViewState().notifyVenueInserted(mVenueItems.size() - 1);
+        if (mVenueItems.size() == mApiLimit) {
+            isLoading = false;
+        }
+    }
+
+    public void onPowerFling(int lastItemPosition) {
+        if (lastItemPosition == mVenueItems.size() - 1 && !isLoading) {
+
+            isLoading = true;
+            loadDataFromApi();
+        }
     }
 }

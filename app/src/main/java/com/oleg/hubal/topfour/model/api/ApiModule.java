@@ -2,6 +2,8 @@ package com.oleg.hubal.topfour.model.api;
 
 import com.oleg.hubal.topfour.global.Constants;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -12,13 +14,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiModule {
 
     public static ApiInterface getApiInterface() {
-//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
-//                .client(client)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create());
 
         ApiInterface apiInterface = builder.build().create(ApiInterface.class);
