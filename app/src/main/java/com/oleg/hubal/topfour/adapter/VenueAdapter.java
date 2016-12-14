@@ -15,6 +15,7 @@ import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.api.data.Photo;
+import com.oleg.hubal.topfour.utils.PreferenceManager;
 import com.oleg.hubal.topfour.utils.Utility;
 
 import org.json.JSONArray;
@@ -43,13 +44,15 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
     private List<VenueItem> mVenueItems;
     private ModelImpl mModel;
     private Gson mGson;
+    private String mToken;
 
     public VenueAdapter(Context context, OnVenueClickListener venueClickListener) {
         mContext = context;
         mVenueClickListener = venueClickListener;
         mVenueItems = new ArrayList<>();
-        mModel = new ModelImpl(mContext);
+        mModel = new ModelImpl();
         mGson = new Gson();
+        mToken = PreferenceManager.getToken(context);
     }
 
     @Override
@@ -92,7 +95,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
         View.OnClickListener mViewHolderClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mVenueClickListener.onVenueClick(mVenueItem.getId());
+                mVenueClickListener.onVenueClick(mVenueItem, mVenueImageView);
             }
         };
 
@@ -135,7 +138,7 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
         private void loadVenuePhoto() {
             String photoUrl = mVenueItem.getPhotoUrl();
             if (TextUtils.isEmpty(photoUrl)) {
-                Call<ResponseBody> venuePhotoResponse = mModel.getVenuePhoto(mVenueItem.getId(), 1);
+                Call<ResponseBody> venuePhotoResponse = mModel.getVenuePhoto(mVenueItem.getId(), 1, mToken);
                 venuePhotoResponse.enqueue(mVenuePhotoCallback);
             } else {
                 ImageLoader.getInstance().displayImage(photoUrl, mVenueImageView);
@@ -157,6 +160,6 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
     }
 
     public interface OnVenueClickListener {
-        void onVenueClick(String venueId);
+        void onVenueClick(VenueItem venueItem, ImageView imageView);
     }
 }

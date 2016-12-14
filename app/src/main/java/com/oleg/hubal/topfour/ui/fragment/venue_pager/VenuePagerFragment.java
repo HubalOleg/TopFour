@@ -1,5 +1,6 @@
 package com.oleg.hubal.topfour.ui.fragment.venue_pager;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private static int RECYCLER_FLING_VELOCITY = 12000;
     public static final String TAG = "VenuePagerFragment";
 
+    private VenueAdapter.OnVenueClickListener mOnVenueClickListener;
     private VenueAdapter mVenueAdapter;
     private LinearLayoutManager mLayoutManager;
 
@@ -40,13 +42,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     VenuePagerPresenter provideVenuePagerPresenter() {
         return new VenuePagerPresenter(getContext());
     }
-
-    private VenueAdapter.OnVenueClickListener mOnVenueClickListener = new VenueAdapter.OnVenueClickListener() {
-        @Override
-        public void onVenueClick(String venueId) {
-//            todo
-        }
-    };
 
     private RecyclerView.OnFlingListener mOnFlingListener = new RecyclerView.OnFlingListener() {
         @Override
@@ -65,6 +60,12 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mOnVenueClickListener = (VenueAdapter.OnVenueClickListener) context;
     }
 
     @Override

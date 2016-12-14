@@ -59,20 +59,6 @@ public class CacheLocationActivity extends MvpAppCompatActivity implements Cache
     }
 
     @Override
-    public void showProgressDialog() {
-        mProgressDialog = new ProgressDialog(CacheLocationActivity.this);
-        mProgressDialog.setTitle("Downloading data");
-        mProgressDialog.setMessage("Please wait few seconds");
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
     public void showLocation(String location) {
         mAskLocationTextView.setText("Is " + location + " your current location?");
     }

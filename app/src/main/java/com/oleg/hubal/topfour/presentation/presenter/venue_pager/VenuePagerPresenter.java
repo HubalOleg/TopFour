@@ -5,27 +5,24 @@ import android.content.Context;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.google.gson.Gson;
+import com.oleg.hubal.topfour.global.TopFourApplication;
 import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.api.data.Venue;
 import com.oleg.hubal.topfour.model.database.VenueDB;
+import com.oleg.hubal.topfour.presentation.events.LoadVenueEvent;
+import com.oleg.hubal.topfour.presentation.jobs.LoadVenueJob;
 import com.oleg.hubal.topfour.presentation.view.venue_pager.VenuePagerView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
+import com.path.android.jobqueue.JobManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @InjectViewState
 public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
@@ -40,32 +37,15 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private List<VenueItem> mVenueItems;
     private int mApiLimit = 0;
     private boolean isLoading = false;
-
-    private Callback<ResponseBody> mVenueDataCallback = new Callback<ResponseBody>() {
-        @Override
-        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            try {
-                if (response.isSuccessful()) {
-                    parseResponse(response.body());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-        }
-    };
+    private JobManager mJobManager;
 
     public VenuePagerPresenter(Context context) {
         mContext = context;
-        mModel = new ModelImpl(context);
+        mModel = new ModelImpl();
         mVenueItems = new ArrayList<>();
         mLocation = PreferenceManager.getLocation(context);
+        EventBus.getDefault().register(VenuePagerPresenter.this);
+        mJobManager = TopFourApplication.getInstance().getJobManager();
     }
 
     public void onLoadData() {
@@ -93,24 +73,11 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         getViewState().showProgressDialog();
         isLoading = true;
         mApiLimit += 5;
-        Call<ResponseBody> venueDataCall = mModel.getVenuesData(mLocation, mApiLimit);
-        venueDataCall.enqueue(mVenueDataCallback);
+
+        mJobManager.addJobInBackground(new LoadVenueJob(mLocation, mApiLimit, PreferenceManager.getToken(mContext)));
     }
 
-    private void parseResponse(ResponseBody responseBody) throws IOException, JSONException {
-        Gson gson = new Gson();
-
-        JSONObject responseJSON = new JSONObject(responseBody.string());
-        JSONArray venueJSONArray = responseJSON.getJSONObject("response").getJSONArray("venues");
-
-        for (int i = 0; i < venueJSONArray.length(); i++) {
-            JSONObject venueJSON = venueJSONArray.getJSONObject(i);
-            Venue venue = gson.fromJson(venueJSON.toString(), Venue.class);
-            handleNewVenueItem(venue);
-        }
-    }
-
-    private void handleNewVenueItem(Venue venue) {
+    private void handleVenueItem(Venue venue) {
         if (mVenueItems.size() < CACHED_ITEM_LIMIT) {
             venue.setCached(true);
             venue.saveToDatabase();
@@ -136,5 +103,16 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         if (lastItemPosition == mVenueItems.size() - 1 && !isLoading) {
             loadDataFromApi();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadVenueEvent(LoadVenueEvent loadVenueEvent) {
+        handleVenueItem(loadVenueEvent.mVenue);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(VenuePagerPresenter.this);
     }
 }

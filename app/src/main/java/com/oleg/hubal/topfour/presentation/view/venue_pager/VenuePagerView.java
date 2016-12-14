@@ -6,7 +6,6 @@ import com.oleg.hubal.topfour.model.VenueItem;
 import java.util.List;
 
 public interface VenuePagerView extends MvpView {
-
     void addVenueList(List<VenueItem> venueItems);
     void notifyVenueInserted(int position);
     void showProgressDialog();

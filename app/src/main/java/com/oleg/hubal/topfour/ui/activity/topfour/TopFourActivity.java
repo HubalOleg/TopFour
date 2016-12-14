@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -18,15 +21,18 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.oleg.hubal.topfour.R;
+import com.oleg.hubal.topfour.adapter.VenueAdapter;
+import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.presentation.presenter.topfour.TopFourPresenter;
 import com.oleg.hubal.topfour.presentation.view.topfour.TopFourView;
 import com.oleg.hubal.topfour.ui.fragment.profile.ProfileFragment;
+import com.oleg.hubal.topfour.ui.fragment.venue_item.VenueItemFragment;
 import com.oleg.hubal.topfour.ui.fragment.venue_pager.VenuePagerFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TopFourActivity extends MvpAppCompatActivity implements TopFourView {
+public class TopFourActivity extends MvpAppCompatActivity implements TopFourView, VenueAdapter.OnVenueClickListener {
     private static final long DRAWER_ITEM_PLACES_ID = 32;
 
     public static final String TAG = "TopFourActivity";
@@ -38,13 +44,15 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @InjectPresenter
     TopFourPresenter mTopFourPresenter;
+    private Transition mChangeTransform;
+    private Transition mExplodeTransform;
 
     @ProvidePresenter
     TopFourPresenter provideTopFourPresenter() {
         return new TopFourPresenter(TopFourActivity.this);
     }
 
-    AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
+    private AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
         @Override
         public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
             launchProfileFragment();
@@ -80,6 +88,11 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_four);
         ButterKnife.bind(TopFourActivity.this);
+
+        mChangeTransform = TransitionInflater.from(TopFourActivity.this).
+                inflateTransition(R.transition.change_image_transform);
+        mExplodeTransform = TransitionInflater.from(TopFourActivity.this).
+                inflateTransition(android.R.transition.explode);
 
         setSupportActionBar(mTopFourToolbar);
 
@@ -127,6 +140,15 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenuePagerFragment.newInstance())
+                .commit();
+    }
+
+    @Override
+    public void onVenueClick(VenueItem venueItem, ImageView imageView) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_container, VenueItemFragment.newInstance(venueItem))
+                .addToBackStack("transaction")
                 .commit();
     }
 }
