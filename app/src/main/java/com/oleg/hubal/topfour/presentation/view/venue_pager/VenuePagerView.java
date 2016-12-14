@@ -9,4 +9,6 @@ public interface VenuePagerView extends MvpView {
 
     void addVenueList(List<VenueItem> venueItems);
     void notifyVenueInserted(int position);
+    void showProgressDialog();
+    void dismissProgressDialog();
 }

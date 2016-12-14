@@ -90,6 +90,8 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     }
 
     private void loadDataFromApi() {
+        getViewState().showProgressDialog();
+        isLoading = true;
         mApiLimit += 5;
         Call<ResponseBody> venueDataCall = mModel.getVenuesData(mLocation, mApiLimit);
         venueDataCall.enqueue(mVenueDataCallback);
@@ -126,13 +128,12 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         getViewState().notifyVenueInserted(mVenueItems.size() - 1);
         if (mVenueItems.size() == mApiLimit) {
             isLoading = false;
+            getViewState().dismissProgressDialog();
         }
     }
 
     public void onPowerFling(int lastItemPosition) {
         if (lastItemPosition == mVenueItems.size() - 1 && !isLoading) {
-
-            isLoading = true;
             loadDataFromApi();
         }
     }

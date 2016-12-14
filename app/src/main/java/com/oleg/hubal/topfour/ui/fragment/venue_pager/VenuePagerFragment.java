@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -30,6 +31,8 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
 
     @BindView(R.id.rv_venue_recycler)
     RecyclerView mVenueRecyclerView;
+    @BindView(R.id.pb_download_progress)
+    ProgressBar mDownloadProgressBar;
     @InjectPresenter
     VenuePagerPresenter mVenuePagerPresenter;
 
@@ -101,5 +104,15 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     @Override
     public void addVenueList(List<VenueItem> venueItems) {
         mVenueAdapter.addVenueList(venueItems);
+    }
+
+    @Override
+    public void showProgressDialog() {
+       mDownloadProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        mDownloadProgressBar.setVisibility(View.GONE);
     }
 }
