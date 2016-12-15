@@ -132,7 +132,9 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             mVenueAddressTextView.setText(venueItem.getAddress());
             mVenueCityTextView.setText(venueItem.getCity());
             mVenueCountryTextView.setText(venueItem.getCountry());
+
             mVenueImageView.setTransitionName("trans_image" + position);
+
             loadVenuePhoto();
         }
 

@@ -47,6 +47,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     TopFourPresenter mTopFourPresenter;
     private Transition mChangeTransform;
     private Transition mExplodeTransform;
+    private VenuePagerFragment mVenuePagerFragment;
 
     @ProvidePresenter
     TopFourPresenter provideTopFourPresenter() {
@@ -56,7 +57,8 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     private AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
         @Override
         public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
-            launchProfileFragment();
+            view.setTransitionName(getString(R.string.profile_image_trans));
+            launchProfileFragment(view);
             mDrawer.closeDrawer();
             return true;
         }
@@ -93,7 +95,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         mChangeTransform = TransitionInflater.from(TopFourActivity.this).
                 inflateTransition(R.transition.change_image_transform);
         mExplodeTransform = TransitionInflater.from(TopFourActivity.this).
-                inflateTransition(android.R.transition.explode);
+                inflateTransition(android.R.transition.fade);
 //
         setSupportActionBar(mTopFourToolbar);
 
@@ -130,25 +132,32 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         mDrawer.setSelection(DRAWER_ITEM_PLACES_ID);
     }
 
-    private void launchProfileFragment() {
+    private void launchProfileFragment(View view) {
         clearBackStack();
+        ProfileFragment profileFragment = ProfileFragment.newInstance();
+        profileFragment.setSharedElementEnterTransition(mChangeTransform);
+        profileFragment.setEnterTransition(mExplodeTransform);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_container, ProfileFragment.newInstance())
+                .replace(R.id.frame_container, profileFragment)
+                .addSharedElement(view, view.getTransitionName())
                 .commit();
     }
 
     private void launchVenuePagerFragment() {
         clearBackStack();
+        mVenuePagerFragment = VenuePagerFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_container, VenuePagerFragment.newInstance())
+                .replace(R.id.frame_container, mVenuePagerFragment)
                 .commit();
     }
 
     @Override
     public void onVenueClick(VenueItem venueItem, ImageView imageView) {
         VenueItemFragment venueItemFragment = VenueItemFragment.newInstance(venueItem, imageView);
+        mVenuePagerFragment.setSharedElementReturnTransition(mChangeTransform);
+        mVenuePagerFragment.setExitTransition(mExplodeTransform);
         venueItemFragment.setSharedElementEnterTransition(mChangeTransform);
         venueItemFragment.setEnterTransition(mExplodeTransform);
 

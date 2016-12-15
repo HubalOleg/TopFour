@@ -65,6 +65,7 @@ public class AuthorizeActivity extends MvpAppCompatActivity implements Authorize
 
     @Override
     public void userAuthorized() {
+        finish();
         startActivity(MainActivity.getIntent(AuthorizeActivity.this));
     }
 }

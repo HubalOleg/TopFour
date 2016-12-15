@@ -71,6 +71,7 @@ public class CacheLocationActivity extends MvpAppCompatActivity implements Cache
 
     @Override
     public void showTopFourActivity() {
+        finish();
         startActivity(MainActivity.getIntent(CacheLocationActivity.this));
     }
 }

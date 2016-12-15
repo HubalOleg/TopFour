@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,13 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
         initRecyclerView();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setExitTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.no_transition));
     }
 
     private void initRecyclerView() {

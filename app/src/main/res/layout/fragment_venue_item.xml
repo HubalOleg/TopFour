@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:background="@drawable/application_background"
+              android:background="@android:color/transparent"
               tools:context="com.oleg.hubal.topfour.venue_item.VenueItemFragment">
 
     <ImageView

@@ -60,8 +60,7 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     }
 
     private boolean loadDataFromDatabase() {
-        List<VenueDB> dbVenueList = new ArrayList<>();
-        dbVenueList = SQLite.select().from(VenueDB.class).queryList();
+        List<VenueDB> dbVenueList = SQLite.select().from(VenueDB.class).queryList();
         if (dbVenueList.size() == 0) {
             return true;
         } else {
