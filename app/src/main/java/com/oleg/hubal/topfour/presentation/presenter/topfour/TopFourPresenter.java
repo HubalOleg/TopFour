@@ -48,4 +48,9 @@ public class TopFourPresenter extends MvpPresenter<TopFourView> {
     public void onVenuesItemClick() {
         getViewState().launchVenuePagerFragment();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

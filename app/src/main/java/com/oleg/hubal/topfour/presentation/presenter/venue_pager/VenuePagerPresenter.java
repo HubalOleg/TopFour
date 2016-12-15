@@ -2,7 +2,7 @@ package com.oleg.hubal.topfour.presentation.presenter.venue_pager;
 
 
 import android.content.Context;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -18,6 +18,7 @@ import com.oleg.hubal.topfour.presentation.view.venue_pager.VenuePagerView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 import com.path.android.jobqueue.JobManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +44,21 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private boolean isLoading = false;
     private JobManager mJobManager;
 
+    private QueryTransaction.QueryResultListCallback<VenueDB> mVenueQueryListCallback = new QueryTransaction.QueryResultListCallback<VenueDB>() {
+        @Override
+        public void onListQueryResult(QueryTransaction transaction, @NonNull List<VenueDB> venueDBList) {
+            if (venueDBList.size() == 0) {
+                getViewState().addVenueList(mVenueItems);
+                loadDataFromApi();
+            } else {
+                mVenueItems.addAll(venueDBList);
+                mApiLimit = mVenueItems.size();
+                getViewState().addVenueList(mVenueItems);
+
+            }
+        }
+    };
+
     public VenuePagerPresenter(Context context) {
         mContext = context;
         mModel = new ModelImpl();
@@ -53,24 +69,10 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     }
 
     public void onLoadData() {
-        getViewState().addVenueList(mVenueItems);
-        boolean isDatabaseEmpty = loadDataFromDatabase();
-        if (isDatabaseEmpty) {
-            loadDataFromApi();
-        }
-    }
-
-    private boolean loadDataFromDatabase() {
-        List<VenueDB> dbVenueList = SQLite.select().from(VenueDB.class).queryList();
-        if (dbVenueList.size() == 0) {
-            return true;
-        } else {
-            mVenueItems.addAll(dbVenueList);
-            mApiLimit = mVenueItems.size();
-            Log.d(TAG, "loadDataFromDatabase: " + mApiLimit);
-            getViewState().addVenueList(mVenueItems);
-            return false;
-        }
+        SQLite.select().from(VenueDB.class)
+                .async()
+                .queryListResultCallback(mVenueQueryListCallback)
+                .execute();
     }
 
     private void loadDataFromApi() {
@@ -111,10 +113,6 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         }
     }
 
-    public void onVenueItemClick() {
-        getViewState().showVenueItemFragment();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadVenueEvent(LoadVenueEvent loadVenueEvent) {
         handleVenueItem(loadVenueEvent.mVenue);
@@ -123,6 +121,7 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         EventBus.getDefault().unregister(VenuePagerPresenter.this);
     }
 }

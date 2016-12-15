@@ -60,13 +60,12 @@ public class CacheLocationActivity extends MvpAppCompatActivity implements Cache
 
     @Override
     public void showLocation(String location) {
-        mAskLocationTextView.setText("Is " + location + " your current location?");
+        mAskLocationTextView.setText(String.format(getString(R.string.ask_location), location));
     }
 
     @Override
     public void askAnotherLocation() {
-        // todo move all resources to string
-        mAskLocationTextView.setText("Your location incorrect, write another one!");
+        mAskLocationTextView.setText(R.string.incorrect_location);
         mLocationEditText.setVisibility(View.VISIBLE);
     }
 

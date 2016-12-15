@@ -42,11 +42,19 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private VenueItem mVenueItem;
     private ImageView mImageView;
 
+    private RecyclerView.OnFlingListener mOnFlingListener = new RecyclerView.OnFlingListener() {
+        @Override
+        public boolean onFling(int velocityX, int velocityY) {
+            if (velocityY > RECYCLER_FLING_VELOCITY) {
+                mVenuePagerPresenter.onPowerFling(mLayoutManager.findLastCompletelyVisibleItemPosition());
+            }
+            return false;
+        }
+    };
+
     private VenueAdapter.OnVenueClickListener mOnVenueClickListener = new VenueAdapter.OnVenueClickListener() {
         @Override
         public void onVenueClick(VenueItem venueItem, ImageView imageView) {
-            mVenueItem = venueItem;
-            mImageView = imageView;
             setSharedElementReturnTransition(mChangeTransform);
             setExitTransition(mExplodeTransform);
             mOnShowVenueItemListener.onShowVenueItem(venueItem, imageView);
@@ -65,18 +73,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     VenuePagerPresenter provideVenuePagerPresenter() {
         return new VenuePagerPresenter(getContext());
     }
-
-    private RecyclerView.OnFlingListener mOnFlingListener = new RecyclerView.OnFlingListener() {
-        @Override
-        public boolean onFling(int velocityX, int velocityY) {
-            if (velocityY > RECYCLER_FLING_VELOCITY) {
-                mVenuePagerPresenter.onPowerFling(mLayoutManager.findLastCompletelyVisibleItemPosition());
-            }
-            return false;
-        }
-    };
-
-
 
     public static VenuePagerFragment newInstance() {
         VenuePagerFragment fragment = new VenuePagerFragment();
@@ -103,7 +99,9 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
                 inflateTransition(android.R.transition.fade);
 
         mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
-        mVenuePagerPresenter.onLoadData();
+        if (savedInstanceState == null) {
+            mVenuePagerPresenter.onLoadData();
+        }
     }
 
     @Override
@@ -143,13 +141,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     @Override
     public void addVenueList(List<VenueItem> venueItems) {
         mVenueAdapter.addVenueList(venueItems);
-    }
-
-    @Override
-    public void showVenueItemFragment() {
-        setSharedElementReturnTransition(mChangeTransform);
-        setExitTransition(mExplodeTransform);
-        mOnShowVenueItemListener.onShowVenueItem(mVenueItem, mImageView);
     }
 
     @Override

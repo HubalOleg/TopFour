@@ -74,7 +74,7 @@ public class TopFourApplication extends Application {
                 })
                 .minConsumerCount(1)
                 .maxConsumerCount(10)
-                .loadFactor(3)
+                .loadFactor(5)
                 .consumerKeepAlive(120)
                 .build();
         mJobManager = new JobManager(TopFourApplication.this, configuration);
@@ -84,7 +84,7 @@ public class TopFourApplication extends Application {
         DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .cacheInMemory(true)
-//                .cacheOnDisk(true)
+                .cacheOnDisk(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();

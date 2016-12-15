@@ -3,6 +3,7 @@ package com.oleg.hubal.topfour.ui.activity.topfour;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,6 +51,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     private AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
         @Override
         public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
+            mDrawer.closeDrawer();
             mTopFourPresenter.onProfileImageClick();
             return true;
         }
@@ -64,6 +66,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         @Override
         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
             if (drawerItem.getIdentifier() == DRAWER_ITEM_VENUS_ID) {
+                mDrawer.closeDrawer();
                 mTopFourPresenter.onVenuesItemClick();
             }
             return true;
@@ -107,7 +110,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
                 .build();
 
         PrimaryDrawerItem itemPlaces = new PrimaryDrawerItem()
-                .withName("Places")
+                .withName(R.string.menu_places)
                 .withIdentifier(DRAWER_ITEM_VENUS_ID)
                 .withSelectedColorRes(R.color.colorAccent);
 
@@ -124,8 +127,6 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @Override
     public void launchProfileFragment() {
-        mDrawer.closeDrawer();
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, ProfileFragment.newInstance())
@@ -135,7 +136,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @Override
     public void launchVenuePagerFragment() {
-        mDrawer.closeDrawer();
+        clearBackStack();
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -153,5 +154,12 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
                 .addToBackStack("")
                 .addSharedElement(imageView, transitionName)
                 .commit();
+    }
+
+    private void clearBackStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
     }
 }

@@ -18,4 +18,7 @@
 
     <string name="fragment_image_trans">fragment_image_transition</string>
     <string name="profile_image_trans">profile_image_transition</string>
+    <string name="menu_places">Places</string>
+    <string name="incorrect_location">Your location incorrect, write another one!</string>
+    <string name="ask_location">Is %s your current location?</string>
 </resources>
