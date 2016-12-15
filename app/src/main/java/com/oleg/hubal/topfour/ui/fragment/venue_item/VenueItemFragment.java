@@ -1,5 +1,7 @@
 package com.oleg.hubal.topfour.ui.fragment.venue_item;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,6 @@ import android.widget.ImageView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.presentation.presenter.venue_item.VenueItemPresenter;
@@ -33,7 +34,7 @@ public class VenueItemFragment extends MvpAppCompatFragment implements VenueItem
     @InjectPresenter
     VenueItemPresenter mVenueItemPresenter;
 
-    public static VenueItemFragment newInstance(VenueItem venueItem) {
+    public static VenueItemFragment newInstance(VenueItem venueItem, ImageView imageView) {
         VenueItemFragment fragment = new VenueItemFragment();
 
         Bundle args = new Bundle();
@@ -43,6 +44,8 @@ public class VenueItemFragment extends MvpAppCompatFragment implements VenueItem
         args.putString(KEY_NAME, venueItem.getName());
         args.putString(KEY_ADDRESS, venueItem.getAddress());
         args.putString(KEY_PHOTO, venueItem.getPhotoUrl());
+        args.putString("TRANS_NAME", imageView.getTransitionName());
+        args.putParcelable("IMAGE", ((BitmapDrawable) imageView.getDrawable()).getBitmap());
         fragment.setArguments(args);
 
         return fragment;
@@ -58,7 +61,10 @@ public class VenueItemFragment extends MvpAppCompatFragment implements VenueItem
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_venue_item, container, false);
         ButterKnife.bind(VenueItemFragment.this, view);
-        ImageLoader.getInstance().displayImage(getArguments().getString(KEY_PHOTO), mVenueImageView);
+        Bitmap imageBitmap = getArguments().getParcelable("IMAGE");
+        String transitionName = getArguments().getString("TRANS_NAME");
+        mVenueImageView.setTransitionName(transitionName);
+        mVenueImageView.setImageBitmap(imageBitmap);
         return view;
     }
 

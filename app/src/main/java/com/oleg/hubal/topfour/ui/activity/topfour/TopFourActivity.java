@@ -93,7 +93,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
                 inflateTransition(R.transition.change_image_transform);
         mExplodeTransform = TransitionInflater.from(TopFourActivity.this).
                 inflateTransition(android.R.transition.explode);
-
+//
         setSupportActionBar(mTopFourToolbar);
 
         mTopFourPresenter.onLoadProfileData();
@@ -137,6 +137,10 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     }
 
     private void launchVenuePagerFragment() {
+//        VenuePagerFragment venuePagerFragment = VenuePagerFragment.newInstance();
+//        venuePagerFragment.setSharedElementReturnTransition(mChangeTransform);
+//        venuePagerFragment.setExitTransition(mExplodeTransform);
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenuePagerFragment.newInstance())
@@ -145,10 +149,23 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @Override
     public void onVenueClick(VenueItem venueItem, ImageView imageView) {
+        VenueItemFragment venueItemFragment = VenueItemFragment.newInstance(venueItem, imageView);
+        venueItemFragment.setSharedElementEnterTransition(mChangeTransform);
+        venueItemFragment.setEnterTransition(mExplodeTransform);
+
+        String imageTransitionName = imageView.getTransitionName();
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frame_container, VenueItemFragment.newInstance(venueItem))
+                .replace(R.id.frame_container, venueItemFragment)
                 .addToBackStack("transaction")
+                .addSharedElement(imageView, imageTransitionName)
                 .commit();
+
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.frame_container, venueItemFragment)
+//                .addToBackStack("transaction")
+//                .commit();
     }
 }

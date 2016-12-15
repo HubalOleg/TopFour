@@ -27,9 +27,9 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private static int RECYCLER_FLING_VELOCITY = 12000;
     public static final String TAG = "VenuePagerFragment";
 
-    private VenueAdapter.OnVenueClickListener mOnVenueClickListener;
     private VenueAdapter mVenueAdapter;
     private LinearLayoutManager mLayoutManager;
+    private VenueAdapter.OnVenueClickListener mOnVenueClickListener;
 
     @BindView(R.id.rv_venue_recycler)
     RecyclerView mVenueRecyclerView;
@@ -69,13 +69,20 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
+        mVenuePagerPresenter.onLoadData();
+    }
+
+    @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_venue_pager, container, false);
         ButterKnife.bind(VenuePagerFragment.this, view);
 
         initRecyclerView();
-        mVenuePagerPresenter.onLoadData();
 
         return view;
     }
@@ -86,7 +93,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
         mLayoutManager = new LinearLayoutManager(getContext());
         mVenueRecyclerView.setLayoutManager(mLayoutManager);
 
-        mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
         mVenueRecyclerView.setAdapter(mVenueAdapter);
         mVenueRecyclerView.setOnFlingListener(mOnFlingListener);
 

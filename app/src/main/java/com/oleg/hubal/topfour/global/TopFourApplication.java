@@ -83,7 +83,7 @@ public class TopFourApplication extends Application {
     private void configureImageLoader() {
         DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
                 .imageScaleType(ImageScaleType.EXACTLY)
-                .showImageOnLoading(android.R.drawable.screen_background_light)
+//                .showImageOnLoading(android.R.drawable.screen_background_light)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)

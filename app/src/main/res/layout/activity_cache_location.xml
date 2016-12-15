@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="text"
+        android:text=""
         android:textSize="26sp"/>
 
     <EditText

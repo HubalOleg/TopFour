@@ -5,6 +5,7 @@ import com.oleg.hubal.topfour.model.api.Model;
 import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.api.data.Venue;
 import com.oleg.hubal.topfour.presentation.events.LoadVenueEvent;
+import com.oleg.hubal.topfour.presentation.presenter.venue_pager.VenuePagerPresenter;
 import com.oleg.hubal.topfour.utils.Utility;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
@@ -63,7 +64,9 @@ public class LoadVenueJob extends Job {
         JSONObject responseJSON = Utility.getJSONObjectFromResponse(response);
         JSONArray venueJSONArray = responseJSON.getJSONArray("venues");
 
-        for (int i = 0; i < venueJSONArray.length(); i++) {
+        int firstPosition = mApiLimit - VenuePagerPresenter.VENUES_PER_REQUEST;
+
+        for (int i = firstPosition; i < venueJSONArray.length(); i++) {
             JSONObject venueJSON = venueJSONArray.getJSONObject(i);
             Venue venue = gson.fromJson(venueJSON.toString(), Venue.class);
             EventBus.getDefault().post(new LoadVenueEvent(venue));

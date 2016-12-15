@@ -2,6 +2,7 @@ package com.oleg.hubal.topfour.presentation.presenter.venue_pager;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -30,6 +31,8 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private static final String TAG = "VenuePagerPresenter";
 
     private static final int CACHED_ITEM_LIMIT = 5;
+
+    public static final int VENUES_PER_REQUEST = 5;
 
     private final Context mContext;
     private ModelImpl mModel;
@@ -72,9 +75,12 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private void loadDataFromApi() {
         getViewState().showProgressDialog();
         isLoading = true;
-        mApiLimit += 5;
+        mApiLimit += VENUES_PER_REQUEST;
 
-        mJobManager.addJobInBackground(new LoadVenueJob(mLocation, mApiLimit, PreferenceManager.getToken(mContext)));
+        String token = PreferenceManager.getToken(mContext);
+        Log.d(TAG, "loadDataFromApi: " + token);
+
+        mJobManager.addJobInBackground(new LoadVenueJob(mLocation, mApiLimit, token));
     }
 
     private void handleVenueItem(Venue venue) {

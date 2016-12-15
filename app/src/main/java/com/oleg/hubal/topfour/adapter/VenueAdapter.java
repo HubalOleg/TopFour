@@ -127,11 +127,12 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
 
         public void onBind(int position, VenueItem venueItem) {
             mVenueItem = venueItem;
-            mVenueImageView.setImageResource(android.R.drawable.stat_sys_download);
+            mVenueImageView.setImageResource(R.drawable.item_no_image_background);
             mVenueNameTextView.setText(venueItem.getName());
             mVenueAddressTextView.setText(venueItem.getAddress());
             mVenueCityTextView.setText(venueItem.getCity());
             mVenueCountryTextView.setText(venueItem.getCountry());
+            mVenueImageView.setTransitionName("trans_image" + position);
             loadVenuePhoto();
         }
 

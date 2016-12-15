@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    android:layout_margin="4dp"
                                     android:layout_gravity="center_horizontal"
-                                    app:cardCornerRadius="4dp"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical"
                                     app:cardBackgroundColor="@android:color/transparent"
-                                    android:orientation="vertical">
+                                    app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:layout_width="280dp"
@@ -22,10 +22,9 @@
 
             <ImageView
                 android:id="@+id/iv_venue_image"
-                android:transitionName="venue_image"
-                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:id="@+id/tv_venue_name"
@@ -34,9 +33,9 @@
                 android:layout_alignBottom="@id/iv_venue_image"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
+                android:textColor="#69e7bd"
                 android:textSize="20sp"
-                android:typeface="serif"
-                android:textColor="#69e7bd"/>
+                android:typeface="serif"/>
         </RelativeLayout>
 
         <TextView
