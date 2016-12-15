@@ -3,6 +3,7 @@ package com.oleg.hubal.topfour.ui.activity.topfour;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
@@ -130,6 +131,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     }
 
     private void launchProfileFragment() {
+        clearBackStack();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, ProfileFragment.newInstance())
@@ -137,10 +139,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     }
 
     private void launchVenuePagerFragment() {
-//        VenuePagerFragment venuePagerFragment = VenuePagerFragment.newInstance();
-//        venuePagerFragment.setSharedElementReturnTransition(mChangeTransform);
-//        venuePagerFragment.setExitTransition(mExplodeTransform);
-
+        clearBackStack();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenuePagerFragment.newInstance())
@@ -158,14 +157,15 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, venueItemFragment)
-                .addToBackStack("transaction")
+                .addToBackStack("")
                 .addSharedElement(imageView, imageTransitionName)
                 .commit();
+    }
 
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.frame_container, venueItemFragment)
-//                .addToBackStack("transaction")
-//                .commit();
+    private void clearBackStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
     }
 }
