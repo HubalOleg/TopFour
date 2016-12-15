@@ -24,4 +24,12 @@ public class TopFourPresenter extends MvpPresenter<TopFourView> {
         String userPhotoUrl = user.getPhoto();
         getViewState().initMaterialDrawer(userName, userPhotoUrl);
     }
+
+    public void onProfileImageClick() {
+        getViewState().launchProfileFragment();
+    }
+
+    public void onVenuesItemClick() {
+        getViewState().launchVenuePagerFragment();
+    }
 }

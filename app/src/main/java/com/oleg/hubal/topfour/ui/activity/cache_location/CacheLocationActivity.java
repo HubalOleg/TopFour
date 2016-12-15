@@ -47,7 +47,7 @@ public class CacheLocationActivity extends MvpAppCompatActivity implements Cache
     @OnClick(R.id.btn_location_correct)
     public void onLocationCorrectClick() {
         String location = mLocationEditText.getText().toString();
-        mCacheLocationPresenter.onLocationCorrect(location);
+        mCacheLocationPresenter.onLocationCorrectClick(location);
     }
 
     @Override
@@ -65,13 +65,14 @@ public class CacheLocationActivity extends MvpAppCompatActivity implements Cache
 
     @Override
     public void askAnotherLocation() {
+        // todo move all resources to string
         mAskLocationTextView.setText("Your location incorrect, write another one!");
         mLocationEditText.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showTopFourActivity() {
-        finish();
         startActivity(MainActivity.getIntent(CacheLocationActivity.this));
+        finish();
     }
 }

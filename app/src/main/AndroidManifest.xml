@@ -22,8 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.topfour.TopFourActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.topfour.TopFourActivity"/>
         <activity android:name=".ui.activity.authorize.AuthorizeActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.activity.cache_location.CacheLocationActivity"

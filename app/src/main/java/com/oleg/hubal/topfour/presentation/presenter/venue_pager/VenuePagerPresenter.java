@@ -13,6 +13,7 @@ import com.oleg.hubal.topfour.model.api.data.Venue;
 import com.oleg.hubal.topfour.model.database.VenueDB;
 import com.oleg.hubal.topfour.presentation.events.LoadVenueEvent;
 import com.oleg.hubal.topfour.presentation.jobs.LoadVenueJob;
+import com.oleg.hubal.topfour.presentation.jobs.SaveVenueJob;
 import com.oleg.hubal.topfour.presentation.view.venue_pager.VenuePagerView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 import com.path.android.jobqueue.JobManager;
@@ -65,7 +66,8 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
             return true;
         } else {
             mVenueItems.addAll(dbVenueList);
-            mApiLimit = dbVenueList.size();
+            mApiLimit = mVenueItems.size();
+            Log.d(TAG, "loadDataFromDatabase: " + mApiLimit);
             getViewState().addVenueList(mVenueItems);
             return false;
         }
@@ -77,7 +79,6 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         mApiLimit += VENUES_PER_REQUEST;
 
         String token = PreferenceManager.getToken(mContext);
-        Log.d(TAG, "loadDataFromApi: " + token);
 
         mJobManager.addJobInBackground(new LoadVenueJob(mLocation, mApiLimit, token));
     }
@@ -85,7 +86,7 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     private void handleVenueItem(Venue venue) {
         if (mVenueItems.size() < CACHED_ITEM_LIMIT) {
             venue.setCached(true);
-            venue.saveToDatabase();
+            mJobManager.addJobInBackground(new SaveVenueJob(venue));
         }
         addItemIfNotExist(venue);
     }
@@ -108,6 +109,10 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         if (lastItemPosition == mVenueItems.size() - 1 && !isLoading) {
             loadDataFromApi();
         }
+    }
+
+    public void onVenueItemClick() {
+        getViewState().showVenueItemFragment();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

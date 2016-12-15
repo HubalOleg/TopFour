@@ -39,7 +39,7 @@ public class CacheLocationPresenter extends MvpPresenter<CacheLocationView> {
         mJobManager.addJobInBackground(new LoadUserDataJob(PreferenceManager.getToken(mContext)));
     }
 
-    public void onLocationCorrect(String location) {
+    public void onLocationCorrectClick(String location) {
         if (!TextUtils.isEmpty(location)) {
             mUserLocation = location;
         }

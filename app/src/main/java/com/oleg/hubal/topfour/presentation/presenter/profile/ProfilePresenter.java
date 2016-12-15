@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 public class ProfilePresenter extends MvpPresenter<ProfileView> {
 
     public void onLoadProfileData() {
+        // todo async
         UserDB user = SQLite.select().from(UserDB.class).querySingle();
         getViewState().showUserData(user);
     }

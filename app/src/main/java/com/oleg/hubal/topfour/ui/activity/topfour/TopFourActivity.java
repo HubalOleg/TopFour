@@ -3,10 +3,7 @@ package com.oleg.hubal.topfour.ui.activity.topfour;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -22,7 +19,6 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.oleg.hubal.topfour.R;
-import com.oleg.hubal.topfour.adapter.VenueAdapter;
 import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.presentation.presenter.topfour.TopFourPresenter;
 import com.oleg.hubal.topfour.presentation.view.topfour.TopFourView;
@@ -33,8 +29,8 @@ import com.oleg.hubal.topfour.ui.fragment.venue_pager.VenuePagerFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TopFourActivity extends MvpAppCompatActivity implements TopFourView, VenueAdapter.OnVenueClickListener {
-    private static final long DRAWER_ITEM_PLACES_ID = 32;
+public class TopFourActivity extends MvpAppCompatActivity implements TopFourView, VenuePagerFragment.OnShowVenueItemListener {
+    private static final long DRAWER_ITEM_VENUS_ID = 32;
 
     public static final String TAG = "TopFourActivity";
 
@@ -45,9 +41,6 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @InjectPresenter
     TopFourPresenter mTopFourPresenter;
-    private Transition mChangeTransform;
-    private Transition mExplodeTransform;
-    private VenuePagerFragment mVenuePagerFragment;
 
     @ProvidePresenter
     TopFourPresenter provideTopFourPresenter() {
@@ -57,9 +50,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     private AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
         @Override
         public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
-            view.setTransitionName(getString(R.string.profile_image_trans));
-            launchProfileFragment(view);
-            mDrawer.closeDrawer();
+            mTopFourPresenter.onProfileImageClick();
             return true;
         }
 
@@ -72,10 +63,9 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     Drawer.OnDrawerItemClickListener mOnDrawerItemClickListener = new Drawer.OnDrawerItemClickListener() {
         @Override
         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-            if (drawerItem.getIdentifier() == DRAWER_ITEM_PLACES_ID) {
-                launchVenuePagerFragment();
+            if (drawerItem.getIdentifier() == DRAWER_ITEM_VENUS_ID) {
+                mTopFourPresenter.onVenuesItemClick();
             }
-            mDrawer.closeDrawer();
             return true;
         }
     };
@@ -92,12 +82,14 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         setContentView(R.layout.activity_top_four);
         ButterKnife.bind(TopFourActivity.this);
 
-        mChangeTransform = TransitionInflater.from(TopFourActivity.this).
-                inflateTransition(R.transition.change_image_transform);
-        mExplodeTransform = TransitionInflater.from(TopFourActivity.this).
-                inflateTransition(android.R.transition.fade);
-//
         setSupportActionBar(mTopFourToolbar);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame_container, VenuePagerFragment.newInstance())
+                    .commit();
+        }
 
         mTopFourPresenter.onLoadProfileData();
     }
@@ -116,7 +108,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
         PrimaryDrawerItem itemPlaces = new PrimaryDrawerItem()
                 .withName("Places")
-                .withIdentifier(DRAWER_ITEM_PLACES_ID)
+                .withIdentifier(DRAWER_ITEM_VENUS_ID)
                 .withSelectedColorRes(R.color.colorAccent);
 
         mDrawer = new DrawerBuilder()
@@ -128,53 +120,38 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
                 .addDrawerItems(itemPlaces)
                 .withOnDrawerItemClickListener(mOnDrawerItemClickListener)
                 .build();
-
-        mDrawer.setSelection(DRAWER_ITEM_PLACES_ID);
     }
 
-    private void launchProfileFragment(View view) {
-        clearBackStack();
-        ProfileFragment profileFragment = ProfileFragment.newInstance();
-        profileFragment.setSharedElementEnterTransition(mChangeTransform);
-        profileFragment.setEnterTransition(mExplodeTransform);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frame_container, profileFragment)
-                .addSharedElement(view, view.getTransitionName())
-                .commit();
-    }
+    @Override
+    public void launchProfileFragment() {
+        mDrawer.closeDrawer();
 
-    private void launchVenuePagerFragment() {
-        clearBackStack();
-        mVenuePagerFragment = VenuePagerFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_container, mVenuePagerFragment)
+                .replace(R.id.frame_container, ProfileFragment.newInstance())
+                .addToBackStack("")
                 .commit();
     }
 
     @Override
-    public void onVenueClick(VenueItem venueItem, ImageView imageView) {
-        VenueItemFragment venueItemFragment = VenueItemFragment.newInstance(venueItem, imageView);
-        mVenuePagerFragment.setSharedElementReturnTransition(mChangeTransform);
-        mVenuePagerFragment.setExitTransition(mExplodeTransform);
-        venueItemFragment.setSharedElementEnterTransition(mChangeTransform);
-        venueItemFragment.setEnterTransition(mExplodeTransform);
-
-        String imageTransitionName = imageView.getTransitionName();
+    public void launchVenuePagerFragment() {
+        mDrawer.closeDrawer();
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_container, venueItemFragment)
-                .addToBackStack("")
-                .addSharedElement(imageView, imageTransitionName)
+                .replace(R.id.frame_container, VenuePagerFragment.newInstance())
                 .commit();
     }
 
-    private void clearBackStack() {
-        FragmentManager fm = getSupportFragmentManager();
-        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-            fm.popBackStack();
-        }
+    @Override
+    public void onShowVenueItem(VenueItem venueItem, ImageView imageView) {
+        String transitionName = imageView.getTransitionName();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_container, VenueItemFragment.newInstance(venueItem, transitionName))
+                .addToBackStack("")
+                .addSharedElement(imageView, transitionName)
+                .commit();
     }
 }
