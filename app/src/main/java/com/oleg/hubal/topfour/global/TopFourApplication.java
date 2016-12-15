@@ -84,7 +84,7 @@ public class TopFourApplication extends Application {
         DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .cacheInMemory(true)
-                .cacheOnDisk(true)
+//                .cacheOnDisk(true)
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
