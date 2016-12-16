@@ -82,7 +82,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
         setSupportActionBar(mTopFourToolbar);
 
-        mTopFourPresenter.onLoadProfileData();
+//        mTopFourPresenter.onLoadProfileData();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()

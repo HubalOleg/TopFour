@@ -94,8 +94,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
         setHasOptionsMenu(true);
 
         mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
-
-        mVenuePagerPresenter.onLoadData();
     }
 
     @Override
@@ -160,5 +158,10 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
 
     public interface OnShowVenueItemListener {
         void onShowVenueItem(VenueItem venueItem, ImageView imageView);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -24,6 +24,12 @@ public class TopFourPresenter extends MvpPresenter<TopFourView> {
         }
     };
 
+    @Override
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
+        onLoadProfileData();
+    }
+
     public void onLoadProfileData() {
         SQLite.select()
                 .from(UserDB.class)

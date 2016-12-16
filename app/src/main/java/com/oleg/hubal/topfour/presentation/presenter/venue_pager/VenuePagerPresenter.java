@@ -61,7 +61,13 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         mContext = TopFourApplication.getAppContext();
         EventBus.getDefault().register(VenuePagerPresenter.this);
         mJobManager = TopFourApplication.getInstance().getJobManager();
+    }
+
+    @Override
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
         getViewState().changeGrid(mGridSpanCount);
+        onLoadData();
     }
 
     public void onLoadData() {
@@ -117,10 +123,6 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     public void onChangeGridItemSelected() {
         mGridSpanCount = (mGridSpanCount % 2) + 1;
         getViewState().changeGrid(mGridSpanCount);
-    }
-
-    public int getSpanCount() {
-        return mGridSpanCount;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
