@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -40,13 +40,8 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
     @BindView(R.id.toolbar_top_four)
     Toolbar mTopFourToolbar;
 
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.GLOBAL)
     TopFourPresenter mTopFourPresenter;
-
-    @ProvidePresenter
-    TopFourPresenter provideTopFourPresenter() {
-        return new TopFourPresenter(TopFourActivity.this);
-    }
 
     private AccountHeader.OnAccountHeaderProfileImageListener mOnProfileImageListener = new AccountHeader.OnAccountHeaderProfileImageListener() {
         @Override
@@ -87,14 +82,20 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
         setSupportActionBar(mTopFourToolbar);
 
+        mTopFourPresenter.onLoadProfileData();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.frame_container, VenuePagerFragment.newInstance())
                     .commit();
         }
+    }
 
-        mTopFourPresenter.onLoadProfileData();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("", true);
     }
 
     @Override
@@ -130,16 +131,16 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, ProfileFragment.newInstance())
-                .addToBackStack("")
+                .addToBackStack(null)
                 .commit();
     }
 
     @Override
     public void launchVenuePagerFragment() {
+        clearBackStack();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenuePagerFragment.newInstance())
-                .addToBackStack("")
                 .commit();
     }
 
@@ -150,7 +151,7 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenueItemFragment.newInstance(venueItem, transitionName))
-                .addToBackStack("")
+                .addToBackStack(null)
                 .addSharedElement(imageView, transitionName)
                 .commit();
     }

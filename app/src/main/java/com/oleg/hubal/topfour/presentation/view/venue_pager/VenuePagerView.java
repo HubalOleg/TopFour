@@ -10,4 +10,5 @@ public interface VenuePagerView extends MvpView {
     void notifyVenueInserted(int position);
     void showProgressDialog();
     void dismissProgressDialog();
+    void changeGrid(int spanCount);
 }

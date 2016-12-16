@@ -2,11 +2,14 @@ package com.oleg.hubal.topfour.ui.fragment.venue_pager;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,7 +17,7 @@ import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
 import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.adapter.VenueAdapter;
 import com.oleg.hubal.topfour.model.VenueItem;
@@ -32,12 +35,9 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private static final int RECYCLER_FLING_VELOCITY = 12000;
 
     private VenueAdapter mVenueAdapter;
-    private LinearLayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
 
     private OnShowVenueItemListener mOnShowVenueItemListener;
-
-    private Transition mChangeTransform;
-    private Transition mExplodeTransform;
 
     private RecyclerView.OnFlingListener mOnFlingListener = new RecyclerView.OnFlingListener() {
         @Override
@@ -52,8 +52,14 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     private VenueAdapter.OnVenueClickListener mOnVenueClickListener = new VenueAdapter.OnVenueClickListener() {
         @Override
         public void onVenueClick(VenueItem venueItem, ImageView imageView) {
-            setSharedElementReturnTransition(mChangeTransform);
-            setExitTransition(mExplodeTransform);
+            Transition changeTransform = TransitionInflater.from(getContext()).
+                    inflateTransition(R.transition.change_image_transform);
+            Transition explodeTransform = TransitionInflater.from(getContext()).
+                    inflateTransition(android.R.transition.fade);
+
+            setSharedElementReturnTransition(changeTransform);
+            setExitTransition(explodeTransform);
+
             mOnShowVenueItemListener.onShowVenueItem(venueItem, imageView);
         }
     };
@@ -63,13 +69,8 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     @BindView(R.id.pb_download_progress)
     ProgressBar mDownloadProgressBar;
 
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.GLOBAL)
     VenuePagerPresenter mVenuePagerPresenter;
-
-    @ProvidePresenter
-    VenuePagerPresenter provideVenuePagerPresenter() {
-        return new VenuePagerPresenter(getContext());
-    }
 
     public static VenuePagerFragment newInstance() {
         VenuePagerFragment fragment = new VenuePagerFragment();
@@ -90,10 +91,7 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mChangeTransform = TransitionInflater.from(getContext()).
-                inflateTransition(R.transition.change_image_transform);
-        mExplodeTransform = TransitionInflater.from(getContext()).
-                inflateTransition(android.R.transition.fade);
+        setHasOptionsMenu(true);
 
         mVenueAdapter = new VenueAdapter(getContext(), mOnVenueClickListener);
 
@@ -108,7 +106,8 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
 
         mVenueRecyclerView.setHasFixedSize(true);
 
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new GridLayoutManager(getContext(), 1);
+
         mVenueRecyclerView.setLayoutManager(mLayoutManager);
 
         mVenueRecyclerView.setAdapter(mVenueAdapter);
@@ -118,13 +117,25 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_pager_menu ,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mVenuePagerPresenter.onChangeGridItemSelected();
+        return true;
+    }
+
+    @Override
+    public void changeGrid(int spanCount) {
+        mLayoutManager.setSpanCount(spanCount);
     }
 
     @Override
@@ -135,7 +146,6 @@ public class VenuePagerFragment extends MvpAppCompatFragment implements VenuePag
     @Override
     public void addVenueList(List<VenueItem> venueItems) {
         mVenueAdapter.addVenueList(venueItems);
-        mVenueAdapter.notifyDataSetChanged();
     }
 
     @Override

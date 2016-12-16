@@ -1,6 +1,7 @@
 package com.oleg.hubal.topfour.global;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -31,6 +32,8 @@ public class TopFourApplication extends Application {
 
     private JobManager mJobManager;
 
+    private static Context context;
+
     public TopFourApplication() {
         instance = TopFourApplication.this;
     }
@@ -45,6 +48,8 @@ public class TopFourApplication extends Application {
         configureImageLoader();
 
         configureDrawerImageLoader();
+
+        TopFourApplication.context = getApplicationContext();
     }
 
     private void configureJobManager() {
@@ -73,8 +78,8 @@ public class TopFourApplication extends Application {
                     }
                 })
                 .minConsumerCount(1)
-                .maxConsumerCount(10)
-                .loadFactor(5)
+                .maxConsumerCount(20)
+                .loadFactor(3)
                 .consumerKeepAlive(120)
                 .build();
         mJobManager = new JobManager(TopFourApplication.this, configuration);
@@ -117,6 +122,10 @@ public class TopFourApplication extends Application {
             }
         });
 
+    }
+
+    public static Context getAppContext() {
+        return TopFourApplication.context;
     }
 
     public JobManager getJobManager() {

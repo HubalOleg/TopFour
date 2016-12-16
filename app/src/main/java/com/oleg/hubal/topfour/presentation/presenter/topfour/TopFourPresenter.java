@@ -1,7 +1,6 @@
 package com.oleg.hubal.topfour.presentation.presenter.topfour;
 
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -14,8 +13,6 @@ import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransacti
 @InjectViewState
 public class TopFourPresenter extends MvpPresenter<TopFourView> {
 
-    private final Context mContext;
-
     private QueryTransaction.QueryResultSingleCallback<UserDB> mResultSingleCallback = new QueryTransaction.QueryResultSingleCallback<UserDB>() {
         @Override
         public void onSingleQueryResult(QueryTransaction transaction, @Nullable UserDB userDB) {
@@ -27,10 +24,6 @@ public class TopFourPresenter extends MvpPresenter<TopFourView> {
         }
     };
 
-    public TopFourPresenter(Context context) {
-        mContext = context;
-    }
-
     public void onLoadProfileData() {
         SQLite.select()
                 .from(UserDB.class)
@@ -39,18 +32,11 @@ public class TopFourPresenter extends MvpPresenter<TopFourView> {
                 .execute();
     }
 
-
-
     public void onProfileImageClick() {
         getViewState().launchProfileFragment();
     }
 
     public void onVenuesItemClick() {
         getViewState().launchVenuePagerFragment();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -11,8 +11,8 @@ import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.model.api.data.Venue;
 import com.oleg.hubal.topfour.model.database.VenueDB;
 import com.oleg.hubal.topfour.presentation.events.LoadVenueEvent;
-import com.oleg.hubal.topfour.presentation.jobs.SearchVenueJob;
 import com.oleg.hubal.topfour.presentation.jobs.SaveVenueJob;
+import com.oleg.hubal.topfour.presentation.jobs.SearchVenueJob;
 import com.oleg.hubal.topfour.presentation.view.venue_pager.VenuePagerView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 import com.path.android.jobqueue.JobManager;
@@ -35,9 +35,10 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
 
     public static final int VENUES_PER_REQUEST = 5;
 
+    private List<VenueItem> mVenueItems = new ArrayList<>();
+    private int mGridSpanCount = 1;
+
     private final Context mContext;
-    private String mLocation;
-    private List<VenueItem> mVenueItems;
     private int mApiLimit = 0;
     private boolean isLoading = false;
     private JobManager mJobManager;
@@ -56,16 +57,15 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         }
     };
 
-    public VenuePagerPresenter(Context context) {
-        mContext = context;
-        mVenueItems = new ArrayList<>();
-        mLocation = PreferenceManager.getLocation(context);
+    public VenuePagerPresenter() {
+        mContext = TopFourApplication.getAppContext();
         EventBus.getDefault().register(VenuePagerPresenter.this);
         mJobManager = TopFourApplication.getInstance().getJobManager();
+        getViewState().changeGrid(mGridSpanCount);
     }
 
     public void onLoadData() {
-        if (mVenueItems.size() != 0) {
+        if (mVenueItems.size() !=  0) {
             getViewState().addVenueList(mVenueItems);
             return;
         }
@@ -80,18 +80,16 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         isLoading = true;
         mApiLimit += VENUES_PER_REQUEST;
 
+        String location = PreferenceManager.getLocation(mContext);
         String token = PreferenceManager.getToken(mContext);
 
-        mJobManager.addJobInBackground(new SearchVenueJob(mLocation, mApiLimit, token));
+        mJobManager.addJobInBackground(new SearchVenueJob(location, mApiLimit, token));
     }
 
     private void handleVenueItem(Venue venue) {
         if (mVenueItems.size() < CACHED_ITEM_LIMIT) {
             venue.setCached(true);
             mJobManager.addJobInBackground(new SaveVenueJob(venue));
-//            FastStoreModelTransaction
-//                    .insertBuilder(FlowManager.getModelAdapter(VenueDB.class))
-//                    .add(venue)
         }
         addItemIfNotExist(venue);
     }
@@ -114,6 +112,15 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
         if (lastItemPosition == mVenueItems.size() - 1 && !isLoading) {
             loadDataFromApi();
         }
+    }
+
+    public void onChangeGridItemSelected() {
+        mGridSpanCount = (mGridSpanCount % 2) + 1;
+        getViewState().changeGrid(mGridSpanCount);
+    }
+
+    public int getSpanCount() {
+        return mGridSpanCount;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

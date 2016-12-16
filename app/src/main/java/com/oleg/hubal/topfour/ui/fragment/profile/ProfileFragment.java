@@ -50,7 +50,9 @@ public class ProfileFragment extends MvpAppCompatFragment implements ProfileView
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(ProfileFragment.this, view);
+
         mProfilePresenter.onLoadProfileData();
+
         return view;
     }
 
