@@ -8,11 +8,10 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.oleg.hubal.topfour.global.TopFourApplication;
 import com.oleg.hubal.topfour.model.VenueItem;
-import com.oleg.hubal.topfour.model.api.ModelImpl;
 import com.oleg.hubal.topfour.model.api.data.Venue;
 import com.oleg.hubal.topfour.model.database.VenueDB;
 import com.oleg.hubal.topfour.presentation.events.LoadVenueEvent;
-import com.oleg.hubal.topfour.presentation.jobs.LoadVenueJob;
+import com.oleg.hubal.topfour.presentation.jobs.SearchVenueJob;
 import com.oleg.hubal.topfour.presentation.jobs.SaveVenueJob;
 import com.oleg.hubal.topfour.presentation.view.venue_pager.VenuePagerView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
@@ -37,7 +36,6 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     public static final int VENUES_PER_REQUEST = 5;
 
     private final Context mContext;
-    private ModelImpl mModel;
     private String mLocation;
     private List<VenueItem> mVenueItems;
     private int mApiLimit = 0;
@@ -54,14 +52,12 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
                 mVenueItems.addAll(venueDBList);
                 mApiLimit = mVenueItems.size();
                 getViewState().addVenueList(mVenueItems);
-
             }
         }
     };
 
     public VenuePagerPresenter(Context context) {
         mContext = context;
-        mModel = new ModelImpl();
         mVenueItems = new ArrayList<>();
         mLocation = PreferenceManager.getLocation(context);
         EventBus.getDefault().register(VenuePagerPresenter.this);
@@ -69,6 +65,10 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
     }
 
     public void onLoadData() {
+        if (mVenueItems.size() != 0) {
+            getViewState().addVenueList(mVenueItems);
+            return;
+        }
         SQLite.select().from(VenueDB.class)
                 .async()
                 .queryListResultCallback(mVenueQueryListCallback)
@@ -82,13 +82,16 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
 
         String token = PreferenceManager.getToken(mContext);
 
-        mJobManager.addJobInBackground(new LoadVenueJob(mLocation, mApiLimit, token));
+        mJobManager.addJobInBackground(new SearchVenueJob(mLocation, mApiLimit, token));
     }
 
     private void handleVenueItem(Venue venue) {
         if (mVenueItems.size() < CACHED_ITEM_LIMIT) {
             venue.setCached(true);
             mJobManager.addJobInBackground(new SaveVenueJob(venue));
+//            FastStoreModelTransaction
+//                    .insertBuilder(FlowManager.getModelAdapter(VenueDB.class))
+//                    .add(venue)
         }
         addItemIfNotExist(venue);
     }

@@ -14,24 +14,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.oleg.hubal.topfour.R;
 import com.oleg.hubal.topfour.model.VenueItem;
 import com.oleg.hubal.topfour.model.api.ModelImpl;
-import com.oleg.hubal.topfour.model.api.data.Photo;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
-import com.oleg.hubal.topfour.utils.Utility;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by User on 13.12.2016.
@@ -74,7 +63,6 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
 
     public void addVenueList(List<VenueItem> venueItems) {
         mVenueItems = venueItems;
-        notifyDataSetChanged();
     }
 
     class VenueViewHolder extends RecyclerView.ViewHolder{
@@ -96,26 +84,6 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
             @Override
             public void onClick(View view) {
                 mVenueClickListener.onVenueClick(mVenueItem, mVenueImageView);
-            }
-        };
-
-        private Callback<ResponseBody> mVenuePhotoCallback = new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        handleResponse(response);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
             }
         };
 
@@ -141,24 +109,8 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.VenueViewHol
 
         private void loadVenuePhoto() {
             String photoUrl = mVenueItem.getPhotoUrl();
-            if (TextUtils.isEmpty(photoUrl)) {
-                Call<ResponseBody> venuePhotoResponse = mModel.getVenuePhoto(mVenueItem.getId(), 1, mToken);
-                venuePhotoResponse.enqueue(mVenuePhotoCallback);
-            } else {
+            if (!TextUtils.isEmpty(photoUrl)) {
                 ImageLoader.getInstance().displayImage(photoUrl, mVenueImageView);
-            }
-        }
-
-        private void handleResponse(Response<ResponseBody> response) throws IOException, JSONException {
-            JSONObject responseJson = Utility.getJSONObjectFromResponse(response);
-            JSONArray photoJSONArray = responseJson.getJSONObject("photos").getJSONArray("items");
-            JSONObject photoJSONObject = photoJSONArray.getJSONObject(0);
-            Photo photo = mGson.fromJson(photoJSONObject.toString(), Photo.class);
-            String photoUrl = photo.getPhotoUrl();
-            mVenueItem.setPhotoUrl(photoUrl);
-            loadVenuePhoto();
-            if (mVenueItem.isCached()) {
-                mVenueItem.saveToDatabase();
             }
         }
     }

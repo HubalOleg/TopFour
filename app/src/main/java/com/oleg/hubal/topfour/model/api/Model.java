@@ -11,4 +11,5 @@ public interface Model {
     Call<ResponseBody> getUserData(String token);
     Call<ResponseBody> getVenuesData(String location, int limit, String token);
     Call<ResponseBody> getVenuePhoto(String venueID, int limit, String token);
+    Call<ResponseBody> getVenueByID(String venueID, String token);
 }

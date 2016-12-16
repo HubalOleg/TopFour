@@ -20,6 +20,10 @@ public class Venue implements VenueItem, DatabaseItem {
     @SerializedName("location")
     @Expose
     private Location location;
+    @SerializedName("bestPhoto")
+    @Expose
+    private Photo photo;
+
     private String photoUrl = "";
     private boolean isCached = false;
 
@@ -77,8 +81,18 @@ public class Venue implements VenueItem, DatabaseItem {
         location.setCountry(country);
     }
 
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+        photoUrl = (photo == null) ? null : photo.getPhotoUrl();
+    }
+
     @Override
     public String getPhotoUrl() {
+        photoUrl = (photo == null) ? null : photo.getPhotoUrl();
         return photoUrl;
     }
 
@@ -99,7 +113,7 @@ public class Venue implements VenueItem, DatabaseItem {
 
     @Override
     public void saveToDatabase() {
-        new VenueDB(id, name, getAddress(), getCity(), getCountry(), photoUrl)
-                .save();
+//        photoUrl = photo.getPhotoUrl();
+        VenueDB venueDB =  new VenueDB(id, name, getAddress(), getCity(), getCountry(), photoUrl);
     }
 }

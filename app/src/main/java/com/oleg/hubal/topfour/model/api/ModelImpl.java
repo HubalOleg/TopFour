@@ -33,4 +33,9 @@ public class ModelImpl implements Model {
     public Call<ResponseBody> getVenuePhoto(String venueID, int limit, String token) {
         return mApiInterface.getVenuePhoto(venueID, limit, token, mCurrentDate);
     }
+
+    @Override
+    public Call<ResponseBody> getVenueByID(String venueID, String token) {
+        return mApiInterface.getVenueById(venueID, token, mCurrentDate);
+    }
 }

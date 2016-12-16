@@ -1,6 +1,7 @@
 package com.oleg.hubal.topfour.presentation.jobs;
 
 import com.oleg.hubal.topfour.model.VenueItem;
+import com.oleg.hubal.topfour.model.database.VenueDB;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
@@ -16,12 +17,23 @@ public class SaveVenueJob extends Job {
 
     private final int id;
 
-    private VenueItem mVenueItem;
+    private String mId;
+    private String mName;
+    private String mAddress;
+    private String mCity;
+    private String mCountry;
+    private String mPhotoUrl;
+
 
     public SaveVenueJob(VenueItem venueItem) {
         super(new Params(Priority.MID).requireNetwork().persist().groupBy("load_venue_job"));
         id = jobCounter.incrementAndGet();
-        mVenueItem = venueItem;
+        mId = venueItem.getId();
+        mName = venueItem.getName();
+        mCity = venueItem.getCity();
+        mAddress = venueItem.getAddress();
+        mCountry = venueItem.getCountry();
+        mPhotoUrl = venueItem.getPhotoUrl();
     }
 
     @Override
@@ -31,7 +43,8 @@ public class SaveVenueJob extends Job {
 
     @Override
     public void onRun() throws Throwable {
-        mVenueItem.saveToDatabase();
+        VenueDB venueDB = new VenueDB(mId, mName, mAddress, mCity, mCountry, mPhotoUrl);
+        venueDB.saveToDatabase();
     }
 
     @Override

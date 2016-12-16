@@ -10,7 +10,6 @@ import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,25 +19,23 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by User on 14.12.2016.
+ * Created by User on 16.12.2016.
  */
 
-public class LoadVenueJob extends Job {
+public class LoadVenueByIdJob extends Job {
     private static final AtomicInteger jobCounter = new AtomicInteger(0);
 
     private final int id;
+    private final String mVenueId;
+    private final String mToken;
 
-    private String mLocation;
-    private String mToken;
-    private int mApiLimit;
-
-    public LoadVenueJob(String location, int apiLimit, String token) {
-        super(new Params(Priority.MID).requireNetwork().persist().groupBy("load_venue_job"));
+    public LoadVenueByIdJob(String venueId, String token) {
+        super(new Params(Priority.MID).requireNetwork().persist().groupBy("load_venue_by_id"));
         id = jobCounter.incrementAndGet();
-        mLocation = location;
-        mApiLimit = apiLimit;
+        mVenueId = venueId;
         mToken = token;
     }
+
 
     @Override
     public void onAdded() {
@@ -47,27 +44,20 @@ public class LoadVenueJob extends Job {
 
     @Override
     public void onRun() throws Throwable {
-        if(id != jobCounter.get()) {
-            return;
-        }
         Gson gson = new Gson();
         Model model = new ModelImpl();
 
-        Call<ResponseBody> venueDataCall = model.getVenuesData(mLocation, mApiLimit, mToken);
-        Response<ResponseBody> response = venueDataCall.execute();
+        Call<ResponseBody> venueResponseCall = model.getVenueByID(mVenueId, mToken);
+        Response<ResponseBody> response = venueResponseCall.execute();
+        JSONObject responseJSON = Utility.getJSONObjectFromResponse(response);
 
         if (!response.isSuccessful()) {
             return;
         }
 
-        JSONObject responseJSON = Utility.getJSONObjectFromResponse(response);
-        JSONArray venueJSONArray = responseJSON.getJSONArray("venues");
-
-        for (int i = 0; i < venueJSONArray.length(); i++) {
-            JSONObject venueJSON = venueJSONArray.getJSONObject(i);
-            Venue venue = gson.fromJson(venueJSON.toString(), Venue.class);
-            EventBus.getDefault().post(new LoadVenueEvent(venue));
-        }
+        JSONObject venueJSON = responseJSON.getJSONObject("venue");
+        Venue venue = gson.fromJson(venueJSON.toString(), Venue.class);
+        EventBus.getDefault().post(new LoadVenueEvent(venue));
     }
 
     @Override

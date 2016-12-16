@@ -136,11 +136,10 @@ public class TopFourActivity extends MvpAppCompatActivity implements TopFourView
 
     @Override
     public void launchVenuePagerFragment() {
-        clearBackStack();
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_container, VenuePagerFragment.newInstance())
+                .addToBackStack("")
                 .commit();
     }
 

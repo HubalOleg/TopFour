@@ -20,4 +20,7 @@ public interface ApiInterface {
 
     @GET("venues/{venueID}/photos")
     Call<ResponseBody> getVenuePhoto(@Path("venueID") String venueID, @Query("limit") int limit, @Query("oauth_token") String token, @Query("v") String v);
+
+    @GET("venues/{venueID}")
+    Call<ResponseBody> getVenueById(@Path("venueID") String venueID, @Query("oauth_token") String token, @Query("v") String v);
 }
