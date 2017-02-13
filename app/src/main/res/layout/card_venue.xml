@@ -6,13 +6,15 @@
                                     android:layout_gravity="center_horizontal"
                                     android:layout_margin="6dp"
                                     android:orientation="vertical"
+                                    android:clickable="true"
+                                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
                                     app:cardBackgroundColor="@android:color/transparent"
                                     app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="@color/card_background_color"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -33,7 +35,7 @@
                 android:layout_alignBottom="@id/iv_venue_image"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
-                android:textColor="#69e7bd"
+                android:textColor="@color/card_venue_name_color"
                 android:textSize="20sp"
                 android:typeface="serif"/>
         </RelativeLayout>

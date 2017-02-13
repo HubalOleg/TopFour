@@ -3,5 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#76c9bc</color>
-
+    <color name="card_venue_name_color">#b3fff3</color>
+    <color name="card_background_color">#9ce2d7</color>
 </resources>

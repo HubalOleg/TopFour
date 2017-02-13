@@ -14,14 +14,15 @@ import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.FoursquareUnsupportedVersionException;
 import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
+import com.oleg.hubal.topfour.BuildConfig;
 import com.oleg.hubal.topfour.presentation.view.authorize.AuthorizeView;
 import com.oleg.hubal.topfour.utils.PreferenceManager;
 
 @InjectViewState
 public class AuthorizePresenter extends MvpPresenter<AuthorizeView> {
 
-    private static final String CLIENT_SECRET = "LO33W2OB3M5ROG3V5IJDFLSW5EAXAUQE2KIKTQQFKUZSLZ5Z";
-    private static final String CLIENT_ID = "PBML5SSONNK3DNUIIRCKA1VNNME1FDZHKTCBVKLC3DMTINOD";
+    private static final String CLIENT_SECRET = BuildConfig.CLIENT_SECRET;
+    private static final String CLIENT_ID = BuildConfig.CLIENT_ID;
 
     private static final int REQUEST_CODE_FSQ_TOKEN_EXCHANGE = 201;
     private static final int REQUEST_CODE_FSQ_CONNECT = 200;

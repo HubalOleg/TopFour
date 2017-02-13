@@ -12,9 +12,7 @@ public interface VenuePagerView extends MvpView {
     void addVenueList(List<VenueItem> venueItems);
     @StateStrategyType(SkipStrategy.class)
     void notifyVenueInserted(int position);
-    @StateStrategyType(AddToEndSingleStrategy.class)
     void showProgressDialog();
-    @StateStrategyType(AddToEndSingleStrategy.class)
     void dismissProgressDialog();
     @StateStrategyType(AddToEndSingleStrategy.class)
     void changeGrid(int spanCount);

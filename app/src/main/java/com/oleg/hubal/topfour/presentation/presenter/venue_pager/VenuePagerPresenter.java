@@ -31,9 +31,9 @@ public class VenuePagerPresenter extends MvpPresenter<VenuePagerView> {
 
     private static final String TAG = "VenuePagerPresenter";
 
-    private static final int CACHED_ITEM_LIMIT = 5;
+    private static final int CACHED_ITEM_LIMIT = 10;
 
-    public static final int VENUES_PER_REQUEST = 5;
+    public static final int VENUES_PER_REQUEST = 6;
 
     private List<VenueItem> mVenueItems = new ArrayList<>();
     private int mGridSpanCount = 1;
